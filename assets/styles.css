@@ -1,0 +1,56 @@
+body {
+    position: relative;
+    font-family:Helvetica, Arial, Sans-serif;
+    text-align:center;
+}
+.cards {
+    margin:30px;
+    width:200px;
+    height:200px;
+    background-color:#59A3FF;
+    cursor:pointer;
+    display:inline-block;
+    overflow:hidden;
+}
+#cardClone {
+    position:fixed;
+    display:none;
+    margin:30px;
+    width:200px;
+    height:200px;
+    -webkit-transition:.6s;
+    transition:.6s;
+    -webkit-transform-style:preserve-3d;
+    transform-style:preserve-3d;
+    z-index:99;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+}
+#cloneFront, #cloneBack {
+    backface-visibility: hidden;
+    width:100%;
+    height:100%;
+    position:absolute;
+    -webkit-transition:.6s;
+    transition:.6s;
+    overflow:hidden;
+}
+#cloneFront {
+    z-index:100;
+    background-color:#59A3FF;
+    transform: translatez(0);
+}
+#cloneBack {
+    transform:rotateY(-180deg);
+    z-index:101;
+    background-color:#aaa;
+}
+#closeClone {
+    color:white;
+    background-color:black;
+    border:1px solid grey;
+    border-radius:2px;
+    cursor:pointer;
+    float:right;
+}
+
