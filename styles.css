@@ -1,0 +1,61 @@
+/* Custom Bootstrap styling */
+
+/* Color scheme */
+:root {
+    --primary-color: #007bff; /* Blue */
+    --secondary-color: #6c757d; /* Gray */
+    --accent-color: #28a745; /* Green */
+    --dark-color: #343a40; /* Dark gray */
+    --light-color: #f8f9fa; /* Light gray */
+}
+
+/* Styling for the container */
+.container {
+    max-width: 800px;
+}
+
+/* Styling for the card */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for card titles */
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+/* Styling for weather information */
+#current-weather, #forecast {
+    font-size: 1.2rem;
+}
+
+/* Styling for header */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+body {
+    padding-bottom: 60px; /* Adjust the padding to accommodate the footer height */
+}
+
+/* Styling for footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa; /* Footer background color */
+    padding: 10px 0;
+    text-align: center;
+}
+
