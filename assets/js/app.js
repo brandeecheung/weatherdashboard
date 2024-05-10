@@ -1,3 +1,5 @@
+const SEARCH_HISTORY_LENGTH = 5;
+
 $(document).ready(function () {
     var apiKey = '375e44737d8ac3dc37cb3e05e3af1d8c'; // Replace 'YOUR_API_KEY' with your actual API key
     var currentWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
@@ -8,6 +10,7 @@ $(document).ready(function () {
         try {
             const response = await fetch(`${currentWeatherUrl}?q=${city}&appid=${apiKey}&units=imperial`);
             if (!response.ok) {
+                alert('Failed to fetch weather for ' + city);
                 throw new Error('Failed to fetch current weather data');
             }
             const data = await response.json();
@@ -33,56 +36,38 @@ $(document).ready(function () {
 
     // Function to display current weather data with emojis
     function displayCurrentWeather(data) {
-        var weatherDescription = data.weather[0].main;
-        var emoji = '';
-
-        // Choose emoji based on weather description
-        switch (weatherDescription) {
-            case 'Clear':
-                emoji = '🌞'; // Sun emoji
-                break;
-            case 'Clouds':
-                emoji = '☁️'; // Cloud emoji
-                break;
-            case 'Rain':
-                emoji = '🌧️'; // Umbrella with rain emoji
-                break;
-            case 'Drizzle':
-                emoji = '🌧️'; // Umbrella with rain emoji
-                break;
-            case 'Thunderstorm':
-                emoji = '⛈️'; // Thunderstorm emoji
-                break;
-            case 'Snow':
-                emoji = '☃️'; // Snowman emoji
-                break;
-            case 'Mist':
-                emoji = '🌫️'; // Fog emoji
-                break;
-            case 'Haze':
-                emoji = '😶‍🌫️'; // Haze emoji
-                break;
-            default:
-                emoji = '🔷'; // Default emoji (Blue diamond)
-        }
-
-        var weatherInfo = emoji + ' Current Weather in ' + data.name + ': ' + data.weather[0].description + ', Temperature: ' + data.main.temp + '°F';
+        const weatherDescription = data.weather[0].main;
+        const emoji = getEmojiForDescription(weatherDescription);
+        
+        const weatherInfo = emoji + ' ' +
+        'Current Weather in ' + data.name + ': ' + 
+        data.weather[0].description + ', ' +
+        'Temperature: ' + data.main.temp + '°F, ' +
+        'Humidity: ' + data.main.humidity + '%, ' +
+        'Wind Speed: ' + data.wind.speed + 'm/s, ';
         $('#current-weather').text(weatherInfo);
     }
 
     // Function to display forecast data for 12:00 PM each day
     function displayForecast(data) {
-        var forecastList = data.list;
+        const forecastList = data.list;
 
         // Filter the forecast data to include only entries for 12:00 PM
-        var filteredForecast = forecastList.filter(function (forecast) {
+        const filteredForecast = forecastList.filter(function (forecast) {
             return new Date(forecast.dt_txt).getHours() === 12;
         });
 
         var forecastHtml = '<ul>';
         filteredForecast.forEach(function (forecast) {
             var forecastDate = new Date(forecast.dt * 1000);
-            forecastHtml += '<li>' + forecastDate.toDateString() + ': ' + forecast.weather[0].description + ', Temperature: ' + forecast.main.temp + '°F</li>';
+            forecastHtml += '<li>' + 
+            getEmojiForDescription(forecast.weather[0].main) + ' ' +
+            forecastDate.toDateString() + ': ' + 
+            forecast.weather[0].description + ', ' +
+            'Temperature: ' + forecast.main.temp + '°F, ' +
+            'Humidity: ' + forecast.main.humidity + '%, ' +
+            'Wind Speed: ' + forecast.wind.speed + 'm/s, ' +
+            '</li>';
         });
         forecastHtml += '</ul>';
         $('#forecast').html(forecastHtml);
@@ -95,10 +80,79 @@ $(document).ready(function () {
         var city = $('#cityInput').val(); // Get the value from the input field
         getCurrentWeather(city); // Get current weather for the entered city
         getForecast(city); // Get forecast for the entered city
+
+        let previousCities = JSON.parse(localStorage.getItem('cities'));
+
+        if (previousCities == null) {
+            previousCities = [];
+        }
+
+        if (!previousCities.includes(city)) {
+            if (previousCities.length == SEARCH_HISTORY_LENGTH) {
+                previousCities.pop();
+            }
+            previousCities.unshift(city);
+            localStorage.setItem('cities', JSON.stringify(previousCities));
+            updateSearchHistory();
+        }
     });
+
+    $('#previous-entries').on('click', 'a', function() {
+        $('#cityInput').val($(this).text());
+        $('#city-form').submit();
+    })
+
+    function updateSearchHistory() {
+        let previousCities = JSON.parse(localStorage.getItem('cities'));
+
+        if (previousCities == null) {
+            previousCities = [];
+        }
+
+        $('#previous-entries').empty();
+
+        previousCities.forEach((city) => {
+            $('#previous-entries').append(`<li><a class=\"previous-entry\">${city}</a></li>`)
+        })
+    }
 
     // Default city
     var defaultCity = 'New York';
     getCurrentWeather(defaultCity); // Get current weather for default city
     getForecast(defaultCity); // Get forecast for default city
+
+    updateSearchHistory();
 });
+
+function getEmojiForDescription(weatherDescription) {
+    switch (weatherDescription) {
+        case 'Clear':
+            emoji = '🌞';
+            break;
+        case 'Clouds':
+            emoji = '☁️';
+            break;
+        case 'Rain':
+            emoji = '🌧️';
+            break;
+        case 'Drizzle':
+            emoji = '🌧️';
+            break;
+        case 'Thunderstorm':
+            emoji = '⛈️';
+            break;
+        case 'Snow':
+            emoji = '☃️';
+            break;
+        case 'Mist':
+            emoji = '🌫️';
+            break;
+        case 'Haze':
+            emoji = '😶‍🌫️';
+            break;
+        default:
+            emoji = '🔷';
+    }
+    return emoji;
+}
+

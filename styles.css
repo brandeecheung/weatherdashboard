@@ -14,6 +14,19 @@
     max-width: 800px;
 }
 
+/* Additional CSS styles to display list items horizontally */
+.horizontal-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.horizontal-list li {
+    display: inline-block; /* Display list items inline */
+    margin-right: 10px; /* Add some spacing between list items */
+}
+
+
 /* Styling for the card */
 .card {
     border: none;
